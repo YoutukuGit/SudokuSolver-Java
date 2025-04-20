@@ -2,7 +2,6 @@
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -28,19 +27,19 @@ public class SudokuSolver {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         //定义panel布局为9x9方阵，以便放入81个文本框
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(9, 9));
+        JPanel gridPanel = new JPanel();
+        gridPanel.setLayout(new GridLayout(9, 9));
 
         for(int i = 1; i <= 9; i++){
             for(int j = 1; j <= 9; j++){
             JTextField field = new JTextField(3);
-            panel.add(field);
+            gridPanel.add(field);
             sudokuInputFields[i][j] = field;
             }
         }
 
-        JButton button = new JButton("开始求解");
-        button.addActionListener((ActionEvent e)->{
+        JButton solveButton = new JButton("开始求解");
+        solveButton.addActionListener((ActionEvent e)->{
             readSudokuFromUI(sudokuCells);
             if(solveSudokuRecursively(sudokuCells, 1, 1)) { // 从(1,1)开始求解
                 updateUIFromSudoku(sudokuCells);
@@ -49,9 +48,19 @@ public class SudokuSolver {
             }
         });
 
+        JButton resetButton = new JButton("清空");
+        resetButton.addActionListener((ActionEvent e)->{
+            clearSudoku();
+        });
+
+        JPanel controlButtonPanel = new JPanel();
+        controlButtonPanel.setLayout(new GridLayout(1, 2));
+        controlButtonPanel.add(solveButton);
+        controlButtonPanel.add(resetButton);
+
         //定义frame布局为竖直
-        frame.add(panel, BorderLayout.CENTER);
-        frame.add(button, BorderLayout.SOUTH);
+        frame.add(gridPanel, BorderLayout.CENTER);
+        frame.add(controlButtonPanel, BorderLayout.SOUTH);
         
         frame.pack();
         frame.setVisible(true);
@@ -166,6 +175,15 @@ public class SudokuSolver {
         for(int i = 1; i <= 9; i++){
             for(int j = 1; j <= 9; j++){
                 sudokuInputFields[i][j].setText(String.valueOf(sudoku[i][j]));
+            }
+        }
+    }
+    
+    private void clearSudoku(){
+        for(int i = 1; i <= 9; i++){
+            for(int j = 1; j <= 9; j++){
+                sudokuInputFields[i][j].setText("");
+                sudokuCells[i][j] = 0;
             }
         }
     }
